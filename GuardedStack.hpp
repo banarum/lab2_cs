@@ -20,10 +20,10 @@ public:
         stack.push(obj);
     }
 
-    void pop_top(std::shared_ptr<T> container) {
+    void pop_top(T& bigData) {
         std::lock_guard<std::mutex> lock(_m);
         if (!stack.empty()){
-            *container = stack.top();
+            bigData = stack.top();
             stack.pop();
         }
     }

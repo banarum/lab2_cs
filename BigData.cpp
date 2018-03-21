@@ -26,4 +26,19 @@ int BigData::getSize() {
     return this->data.size();
 }
 
+BigData::BigData(const BigData &bigData) {
+    this->seed = bigData.seed;
+    this->data = bigData.data;
+}
+
+BigData &BigData::operator=(const BigData &bigData) {
+    this->data = bigData.data;
+    this->seed = bigData.seed;
+    return *this;
+}
+
+BigData::BigData() {
+    seed = 0;
+}
+
 

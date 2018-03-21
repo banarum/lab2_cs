@@ -1,31 +1,36 @@
 #include <iostream>
 #include <fstream>
+#include <map>
 
 #include "GuardedStack.hpp"
 #include "ThreadGuard.hpp"
 #include "BigData.hpp"
 
-const int DATA_SIZE = 1024*1024*10;
+const int DATA_SIZE = 1024*10;
+
+enum CMD {PUSH = 0, POPTOP = 1};
+
+std::map<int, std::string> COMMANDS;
 
 void printStack(GuardedStack<BigData>& stack) {
     while (!stack.empty()) {
-        shared_ptr<BigData> data(new BigData());
-        stack.pop_top(data);
-        std::cout << (*data).getHash() << std::endl;
+        BigData bigData;
+        stack.pop_top(bigData);
+        std::cout << bigData.getHash() << std::endl;
     }
 }
 
 std::string executeCommand(GuardedStack<BigData> &stack, std::string& cmd, unsigned int seed) {
     std::string result;
-    if (cmd == "push") {
+    if (cmd == COMMANDS[CMD::PUSH]) {
         BigData data = BigData();
         data.generateData(DATA_SIZE, seed);
         stack.push(data);
-    } else if (cmd == "pop_top") {
-        shared_ptr<BigData> data(new BigData());
+    } else if (cmd == COMMANDS[CMD::POPTOP]) {
+        BigData data;
         stack.pop_top(data);
-        if ((*data).getSize()>0){
-            result = (*data).getHash();
+        if (data.getSize()>0){
+            result = data.getHash();
         }
     }
     return result;
@@ -47,6 +52,9 @@ void processCommands(const std::string &pathIn, const std::string &pathOut, Guar
 }
 
 int main() {
+    COMMANDS[CMD::PUSH] = "push";
+    COMMANDS[CMD::POPTOP] = "pop_top";
+
     GuardedStack<BigData> stack;
 
     ThreadGuard motherShip;

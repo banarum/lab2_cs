@@ -17,6 +17,9 @@ public:
     void generateData(int size, unsigned int seed);
     int getSize();
     std::string getHash();
+    BigData();
+    BigData(const BigData& bigData);
+    BigData &operator=(const BigData& bigData);
 };
 
 
