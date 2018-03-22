@@ -10,13 +10,16 @@ const int DATA_SIZE = 1024*10;
 
 enum CMD {PUSH = 0, POPTOP = 1};
 
-std::map<int, std::string> COMMANDS;
+std::map<int, std::string> COMMANDS {
+        {CMD::PUSH, "push"},
+        {CMD::POPTOP, "pop_top"}
+};
 
 void printStack(GuardedStack<BigData>& stack) {
     while (!stack.empty()) {
-        BigData bigData;
-        stack.pop_top(bigData);
-        std::cout << bigData.getHash() << std::endl;
+        std::shared_ptr<BigData> bigData;
+        bigData = stack.pop_top();
+        std::cout << bigData->getHash() << std::endl;
     }
 }
 
@@ -27,10 +30,10 @@ std::string executeCommand(GuardedStack<BigData> &stack, std::string& cmd, unsig
         data.generateData(DATA_SIZE, seed);
         stack.push(data);
     } else if (cmd == COMMANDS[CMD::POPTOP]) {
-        BigData data;
-        stack.pop_top(data);
-        if (data.getSize()>0){
-            result = data.getHash();
+        std::shared_ptr<BigData> data;
+        data = stack.pop_top();
+        if (data!= nullptr){
+            result = data->getHash();
         }
     }
     return result;
@@ -52,9 +55,6 @@ void processCommands(const std::string &pathIn, const std::string &pathOut, Guar
 }
 
 int main() {
-    COMMANDS[CMD::PUSH] = "push";
-    COMMANDS[CMD::POPTOP] = "pop_top";
-
     GuardedStack<BigData> stack;
 
     ThreadGuard motherShip;

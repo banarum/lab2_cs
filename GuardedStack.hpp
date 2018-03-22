@@ -20,12 +20,23 @@ public:
         stack.push(obj);
     }
 
-    void pop_top(T& bigData) {
+    void pop_top(T& typeObject) {
         std::lock_guard<std::mutex> lock(_m);
         if (!stack.empty()){
-            bigData = stack.top();
+            typeObject = stack.top();
             stack.pop();
         }
+    }
+
+    std::shared_ptr<T> pop_top() {
+        std::lock_guard<std::mutex> lock(_m);
+        std::shared_ptr<T> complexObject = nullptr;
+        if (!stack.empty()){
+            //complexObject = std::shared_ptr<T>(new T(stack.top()));
+            complexObject = std::make_shared<T>(stack.top());
+            stack.pop();
+        }
+        return complexObject;
     }
 
     bool empty() {
